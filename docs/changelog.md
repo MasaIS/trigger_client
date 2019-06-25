@@ -1,5 +1,9 @@
 # Change Log
 
+## v0.8.1 (25 June 2019)
+ - New: Add logging
+ - New: Add replicate trigger file
+
 ## v0.8.0 (25 June 2019)
  - New: Add libs, logs and docs
  - New: Update trigger.py
