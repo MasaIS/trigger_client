@@ -2,13 +2,14 @@
 
 from libs import txftp, mtime, argp
 from time import sleep
-import sys, logging
+import sys, os, logging
 
 if __name__ == "__main__":
     #sleep(10)
     try:
         # output logging
         log_fmt = '%(asctime)s [%(levelname)s] : %(message)s'
+        os.makedirs('logs', exist_ok=True)
         logging.basicConfig(filename='logs/trigger.log', level=logging.INFO, format=log_fmt)
 
         # input arguments
