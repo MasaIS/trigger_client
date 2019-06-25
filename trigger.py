@@ -2,26 +2,56 @@
 
 from libs import txftp, mtime, argp
 from time import sleep
-import sys
+import sys, logging
 
 if __name__ == "__main__":
     #sleep(10)
-    ipaddr, user, passwd, tdir, tfilename, max_min, max_sec, max_id = argp.struct_args()
+    try:
+        # output logging
+        log_fmt = '%(asctime)s [%(levelname)s] : %(message)s'
+        logging.basicConfig(filename='logs/trigger.log', level=logging.INFO, format=log_fmt)
 
-    trigger_filename = mtime.make_trigger_datetime()
-    print(trigger_filename)
+        # input arguments
+        args = {}
+        args = argp.struct_args()
 
-    # Create FTP Instance
-    ftp_ins = txftp.ftp_init(ipaddr,10)
-    if ftp_ins == False:
-        sys.exit(1)
-    if txftp.ftp_login(ftp_ins, user, passwd) == False:
-        sys.exit(1)
-    if txftp.ftp_cwd(ftp_ins, tdir) == False:
-        sys.exit(1)
-    if txftp.ftp_transfer(ftp_ins, tfilename) == False:
-        sys.exit(1)
-    if txftp.ftp_rename(ftp_ins, tfilename, trigger_filename) == False:
-        sys.exit(1)
-    if txftp.ftp_logout(ftp_ins) == False:
-        sys.exit(1)
+    except FileNotFoundError as err:
+        print('logging error:', err)
+        sys.exit(1) 
+    
+    except FileExistsError as err:
+        print('logging error:', err)
+        sys.exit(1) 
+    
+    else:
+        logging.info('Start script: ' + __file__)
+        # make trigger filename
+        trigger_filename = mtime.make_trigger_datetime()
+        if trigger_filename == False:
+            sys.exit(1)
+
+        # Create FTP Instance
+        ftp_ins = txftp.ftp_init(args['address'],10)
+        if ftp_ins == False:
+            sys.exit(1)
+        # FTP login
+        if txftp.ftp_login(ftp_ins, args['user'], args['passwd']) == False:
+            sys.exit(1)
+        # FTP change directory
+        if txftp.ftp_cwd(ftp_ins, args['dir']) == False:
+            sys.exit(1)
+        # Transfer temporary file
+        if txftp.ftp_transfer(ftp_ins, args['file']) == False:
+            sys.exit(1)
+        # Rename to trigger filename
+        if txftp.ftp_rename(ftp_ins, args['file'], trigger_filename) == False:
+            sys.exit(1)
+        # FTP logout
+        if txftp.ftp_logout(ftp_ins) == False:
+            sys.exit(1)
+        # Replicate trigger file
+        if mtime.replicate_trigger('logs', trigger_filename) == False:
+            sys.exit(1)
+        
+        logging.info('Terminate script: ' + __file__)
+        sys.exit(0)

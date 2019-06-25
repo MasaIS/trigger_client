@@ -26,11 +26,12 @@ def struct_args():
 
     args = parser.parse_args()
 
-    #print('IP Address:' + args.address)
-    #print('Login user:' + args.user)
-    #print('Login password:' + args.passwd)
-    #print('Change directory:' + args.dir)
-    #print('Temporary filename:' + args.file)
+    dict_args = {\
+                'address': args.address,\
+                'user': args.user,\
+                'passwd': args.passwd,\
+                'dir': args.dir,\
+                'file': args.file\
+                }
 
-    return args.address, args.user, args.passwd, args.dir, args.file, args.minutes, args.seconds, args.id
-    
+    return dict_args

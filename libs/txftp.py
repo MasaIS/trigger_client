@@ -1,7 +1,9 @@
 
 import os
 import ftplib
+import logging
 
+logger = logging.getLogger(__name__)
 
 def ftp_init(ipaddr, ftptimeout=60):
     """Create FTP class instance
@@ -16,10 +18,11 @@ def ftp_init(ipaddr, ftptimeout=60):
     ins = False
     try:
         ins = ftplib.FTP(host=ipaddr, timeout=ftptimeout)
+        logger.info('FTP connect: ' + ipaddr)
         return ins
 
     except ftplib.all_errors as err:
-        print('FTP error:', err)
+        logger.error('FTP connect error: ' + str(err))
         return ins
 
 
@@ -36,12 +39,12 @@ def ftp_login(ftp, user, password):
     """
     try:
         res = ftp.login(user, password)
-        print('FTP login:', res)
+        logger.info('FTP login: ' + res)
         return True
 
 
     except ftplib.all_errors as err:
-        print('FTP error:', err)
+        logger.error('FTP logine error: ' + str(err))
         ftp.close()
         return False
 
@@ -55,15 +58,15 @@ def ftp_cwd(ftp, chgdir):
          True or False
     """
     try:
-        print('FTP currnet directory:', ftp.pwd())
+        logger.debug('FTP currnet directory: ' + ftp.pwd())
         #print(ftp.dir())
         res = ftp.cwd(chgdir)
-        print('FTP cwd:', res)
-        print('FTP changed directory:', ftp.pwd())
+        logger.info('FTP cwd: ' + res)
+        logger.debug('FTP changed directory: ' + ftp.pwd())
         return True
 
     except ftplib.all_errors as err:
-        print('FTP error:', err)
+        logger.error('FTP cwd error: ' + str(err))
         ftp.close()
         return False
 
@@ -80,15 +83,15 @@ def ftp_transfer(ftp, filename):
     # transfer temp.tmp
     try:
         tx_file = os.path.join(os.getcwd() + "\\" + filename)
-        #print(tx_file)        
+     
         with open(tx_file, 'rb') as fp:
             res = ftp.storbinary('STOR ' + os.path.basename(tx_file), fp)
-            print('FTP transfer:', res)
+            logger.info('FTP transfer: ' + res)
 
         return True
 
     except ftplib.all_errors as err:
-        print('FTP error:', err)
+        logger.error('FTP transfer error: ' + str(err))
         ftp.close()
         return False
 
@@ -110,13 +113,13 @@ def ftp_rename(ftp, old_name, new_name):
         for file in filelist:
             if file == old_name:
                 res = ftp.rename(old_name, new_name)
-                print('FTP rename:', res)
+                logger.info('FTP rename: ' + res)
             else:
                 continue
         return True
 
     except ftplib.all_errors as err:
-        print('FTP error:', err)
+        logger.error('FTP rename error: ' + str(err))
         ftp.close()
         return False
     
@@ -132,10 +135,10 @@ def ftp_logout(ftp):
     """
     try:
         res = ftp.quit()
-        print('FTP logout:', res)
+        logger.info('FTP logout: ' + res)
         return True
         
     except ftplib.all_errors as err:
-        print('FTP error:', err)
+        logger.error('FTP logout error: ' + str(err))
         ftp.close()
         return False
