@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import random
 
 
-def trigger_datetime(max_min=10, max_sec=59, max_id=3):
+def make_trigger_datetime(max_min=10, max_sec=59, max_id=3):
     """ Make datetime for trigger
 
         Arguments :
