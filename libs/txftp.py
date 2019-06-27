@@ -82,7 +82,7 @@ def ftp_transfer(ftp, filename):
     """
     # transfer temp.tmp
     try:
-        tx_file = os.path.join(os.getcwd() + "\\" + filename)
+        tx_file = os.path.join(os.getcwd(), filename)
      
         with open(tx_file, 'rb') as fp:
             res = ftp.storbinary('STOR ' + os.path.basename(tx_file), fp)
@@ -103,20 +103,26 @@ def ftp_rename(ftp, old_name, new_name):
          ftp: FTP class instance
          filename: temporary filename
         Return :
-         True or False
+         flag: True or False
     """
     # rename
     try:
         # get filelist
         filelist = ftp.nlst(".")
-        #print(filelist)
-        for file in filelist:
-            if file == old_name:
+        # flag to rename file
+        flag = False
+        for f in filelist:
+            if f == old_name:
                 res = ftp.rename(old_name, new_name)
                 logger.info('FTP rename: ' + res)
+                flag = True
+                break
             else:
+                flag = False
                 continue
-        return True
+        if flag == False:
+            logger.warn('FTP rename warn: ' + 'Target file is not exist.')
+        return flag
 
     except ftplib.all_errors as err:
         logger.error('FTP rename error: ' + str(err))
