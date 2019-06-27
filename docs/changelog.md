@@ -1,5 +1,8 @@
 # Change Log
 
+## v0.8.2 (27 June 2019)
+ - Update: Bug fix (file can not renamed by txftp.py)
+
 ## v0.8.1 (25 June 2019)
  - New: Add logging
  - New: Add replicate trigger file
