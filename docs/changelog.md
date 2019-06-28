@@ -1,5 +1,9 @@
 # Change Log
 
+## v0.8.3 (28 June 2019)
+ - New: Add README.md
+ - New: Delete pswatch.py
+
 ## v0.8.2 (27 June 2019)
  - Update: Bug fix (file can not renamed by txftp.py)
 
